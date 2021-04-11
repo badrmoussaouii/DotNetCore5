@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NToastNotify;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -28,8 +29,22 @@ namespace DotNetCore5
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
+            {
+                ProgressBar = true,
+                PositionClass = ToastPositions.TopRight,
+                PreventDuplicates = true,
+                CloseButton = true
+
+            });
+
+
+
             services.AddControllersWithViews();
-               
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,7 +52,7 @@ namespace DotNetCore5
         {
             var cultureInfo = new CultureInfo("en");
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-            
+
 
             if (env.IsDevelopment())
             {

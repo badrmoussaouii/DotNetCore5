@@ -63,7 +63,7 @@
                                                 Edit
                                             </a>
 
-                                            <a asp-action="Delete" asp-route-Id="@movie.Id" class="btn btn-outline-danger">
+                                            <a href="javascript:;" class="btn btn-outline-danger js-delete" data-id="@movie.Id">
                                                 <i class="bi bi-trash"></i>
                                                 Delete
                                             </a>
@@ -85,3 +85,60 @@
 
 
 </div>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+            $('.js-delete').on('click', function () {
+                var btn = $(this);
+                console.log(btn.data('id'));
+
+                //var result = confirm('Ête vous sûr de vouloir supprimer cette élement ?');
+
+                swal({
+                    title: "Ête vous sûr ?",
+                    text: "vouloir supprimer cette élement!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            swal("Suppression avec succée!", {
+                                icon: "success",
+                            });
+
+                            $.ajax({
+                                url: '/Movies/Delete/' + btn.data('id'),
+                                success: function () {
+                                    var movieContainer = btn.parents('.col-12')
+                                    movieContainer.addClass('animate__animated animate__zoomOut');
+
+                                    setTimeout(function () {
+                                        movieContainer.remove();
+                                    }, 2000);
+                                   
+
+                                    toastr.success('Deleted succesfully');
+                                },
+                                error: function () {
+                                    toastr.error('Something went wrong!');
+                                }
+                            });
+
+                        } else {
+                            swal("Element non supprimé!");
+                        }
+                    });
+
+                //console.log(result);
+
+
+            });
+        });
+
+
+    </script>
+}
+
